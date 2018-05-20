@@ -1,3 +1,5 @@
+#define AUDIO_DEVICE "hw:PCH"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -19,7 +21,6 @@
 #include <errno.h>
 
 #include <alsa/asoundlib.h>
-
 
 /* expected hook */
 PAM_EXTERN int pam_sm_setcred( pam_handle_t *pamh, int flags, int argc, const char **argv ) {
@@ -69,10 +70,10 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
   snd_pcm_format_t format = SND_PCM_FORMAT_S16_LE;
   pam_syslog(pamh, LOG_DEBUG, "[] declarations done...");
 
-  err = snd_pcm_open (&capture_handle, "default", SND_PCM_STREAM_CAPTURE, 0);
+  err = snd_pcm_open (&capture_handle, AUDIO_DEVICE, SND_PCM_STREAM_CAPTURE, 0);
   pam_syslog(pamh, LOG_DEBUG, "[] pcm_open done");
   if (err < 0) {
-    pam_syslog(pamh, LOG_CRIT, "cannot open audio device %s (%s)\n", "default", snd_strerror (err));
+    pam_syslog(pamh, LOG_CRIT, "cannot open audio device %s (%s)\n", AUDIO_DEVICE, snd_strerror (err));
   }
 
   pam_syslog(pamh, LOG_DEBUG, "audio interface opened\n");
